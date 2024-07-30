@@ -3,14 +3,16 @@ import { StyleSheet } from "react-native";
 import * as Yup from "yup";
 
 import Screen from "../components/Screen";
-import { AppForm, AppFormField, AppFormPicker, SubmitButton } from "../components/forms";
+import { AppForm, AppFormField, AppFormPicker, AppFormImagePicker, SubmitButton } from "../components/forms";
 import CategoryPickerItem from "../components/CategoryPickerItem";
+import useLocation from "../hooks/useLocation";
 
 const validationSchema = Yup.object().shape({
   title: Yup.string().required().min(1).label("Title"),
   price: Yup.number().required().min(1).max(10000).label("Price"),
   category: Yup.object().required().nullable().label("Category"),
   description: Yup.string().label("Description"),
+  images: Yup.array().min(1, "Please select atleat one image.")
 });
 
 const categories = [
@@ -71,13 +73,16 @@ const categories = [
 ];
 
 function ListingEditScreen(props) {
+  const location = useLocation()
+
   return (
     <Screen style={styles.container}>
       <AppForm
-        initialValues={{ title: "", price: "", category: null, description: "" }}
-        onSubmit={(values) => console.log(values)}
+        initialValues={{ title: "", price: "", category: null, description: "", images: [] }}
+        onSubmit={(values) => console.log(location)}
         validationSchema={validationSchema}
       >
+        <AppFormImagePicker name="images"/>
         <AppFormField maxLength={255} name="title" placeholder="Title" />
         <AppFormField keyboardType="numeric" maxLength={8} name="price" placeholder="Price" width={120} />
         <AppFormPicker items={categories} name="category" numberOfColumns={3} placeholder="Category" PickerItemComponent={CategoryPickerItem} width="50%" />

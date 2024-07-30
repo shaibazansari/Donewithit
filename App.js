@@ -1,38 +1,40 @@
-import React, { useEffect, useState } from "react";
-import * as ImagePicker from "expo-image-picker";
+import React, { useState } from "react";
+import { StyleSheet } from "react-native";
 
 import Screen from "./app/components/Screen";
-import AppButton from "./app/components/Button";
-import { Image } from "react-native";
+import defaultStyles from "./app/config/styles";
+import ImageInputList from "./app/components/ImageInputList";
+import ListingEditScreen from "./app/screens/ListingEditScreen";
 
 export default function App() {
-  const [imageUri, setImageUri] = useState();
-  const requestPermission = async () => {
-    const request = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (!request.granted) {
-      alert("You need to enable permission to access the library");
-    }
+  const [imageUris, setImageUris] = useState([]);
+
+  const handleAdd = (uri) => {
+    setImageUris([...imageUris, uri]);
   };
 
-  useEffect(() => {
-    requestPermission();
-  }, []);
-
-  const selectImage = async () => {
-    try {
-      const result = await ImagePicker.launchImageLibraryAsync();
-      if (!result.cancelled) {
-        setImageUri(result.uri);
-      }
-    } catch (error) {
-      console.log("error", error);
-    }
+  const handleDelete = (uri) => {
+    setImageUris(imageUris.filter((imageUri) => imageUri !== uri));
   };
 
   return (
-    <Screen>
-      <AppButton title="Select Image" onPress={selectImage} />
-      <Image source={{ uri: imageUri }} style={{ width: 200, height: 200 }} />
-    </Screen>
+    // <Screen>
+    //   <ImageInputList imageUris={imageUris} onAddImage={handleAdd} onRemoveImage={handleDelete}/>
+    // </Screen>
+    <ListingEditScreen />
   );
 }
+
+const styles = StyleSheet.create({
+  button: {
+    width: 100,
+    height: 100,
+    backgroundColor: defaultStyles.colors.light,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 10,
+  },
+  icon: {
+    color: defaultStyles.colors.medium,
+  },
+});
